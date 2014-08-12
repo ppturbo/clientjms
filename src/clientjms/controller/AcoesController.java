@@ -4,6 +4,7 @@
 package clientjms.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import clientjms.jms.ConsumeMsg;
@@ -52,24 +53,34 @@ public class AcoesController {
 		this.interessesCompra = interessesCompra;
 	}
 
-	public void addInteressesCompra(Interesse interesse){
-		System.out.println("interesse.");
-		
+	public void addInteressesCompra(Interesse interesse){		
 		interessesCompra.add(interesse);
-		System.out.println(interessesCompra.get(0).getMSGID());
-		
 	}
 
 	public void addInteressesVenda(Interesse interesse){
 		interessesVenda.add(interesse);
 	}
 	
-	public void excluirInteresseCompra(String MSGID){//verificar para remover utilizando o iterator
-		for(Interesse interesse : interessesCompra){
-			if(interesse.getMSGID().equals(MSGID))
-				interessesCompra.remove(interesse);
-			break;
-		}
+	public void excluirInteresseCompra(String MSGID){
+		Iterator<Interesse> it = interessesCompra.iterator();
+
+        while(it.hasNext()){
+        	Interesse i=it.next();
+            if(i.getMSGID().equals(MSGID)){
+               it.remove();
+            }
+       }
+	}
+	
+	public void excluirInteresseVenda(String MSGID){
+		Iterator<Interesse> it = interessesVenda.iterator();
+
+        while(it.hasNext()){
+        	Interesse i=it.next();
+            if(i.getMSGID().equals(MSGID)){
+               it.remove();
+            }
+       }
 	}
 	//Iterator<String> it = list.iterator();
 

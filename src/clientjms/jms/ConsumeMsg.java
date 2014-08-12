@@ -34,30 +34,21 @@ public class ConsumeMsg {
 
 	public ConsumeMsg() {
 		ReadCompras readCompras = new ReadCompras();
+		ReadVendas readVendas = new ReadVendas();
+		ReadDelete readDelete = new ReadDelete();
 	}
 
 	public class ReadCompras implements MessageListener {
 		private int ackMode;
 		private String messageTopicName;
 		private String messageBrokerUrl;
-
 		private Session session;
 		private boolean transacted = false;
-		private MessageProducer replyProducer;
 
 		public ReadCompras() {
-			try {
-				// This message broker is embedded
 				messageBrokerUrl = "tcp://localhost:61616";
 				messageTopicName = "Compra";
 				ackMode = Session.AUTO_ACKNOWLEDGE;
-				BrokerService broker = new BrokerService();
-				broker.setPersistent(false);
-				broker.setUseJmx(false);
-				broker.addConnector(messageBrokerUrl);
-				broker.start();
-			} catch (Exception e) {
-			}
 			this.setupMessageTopicConsumer();
 		}
 
@@ -96,6 +87,110 @@ public class ConsumeMsg {
 		}
 
 	}
+	
+	
+	public class ReadVendas implements MessageListener {
+		private int ackMode;
+		private String messageTopicName;
+		private String messageBrokerUrl;
+		private Session session;
+		private boolean transacted = false;
+
+		public ReadVendas() {
+				messageBrokerUrl = "tcp://localhost:61616";
+				messageTopicName = "Vendas";
+				ackMode = Session.AUTO_ACKNOWLEDGE;
+			this.setupMessageTopicConsumer();
+		}
+
+		private void setupMessageTopicConsumer() {
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+					messageBrokerUrl);
+			Connection connection;
+			try {
+				connection = connectionFactory.createConnection();
+				connection.start();
+				this.session = connection.createSession(this.transacted,
+						ackMode);
+				Destination adminQueue = this.session
+						.createTopic(messageTopicName);
+
+				// Set up a consumer to consume messages off of the admin queue
+				MessageConsumer consumer = this.session.createConsumer(adminQueue);
+				consumer.setMessageListener(this);
+			} catch (JMSException e) {
+				// Handle the exception appropriately
+			}
+		}
+
+		public void onMessage(Message message) {
+			try {
+				if (message instanceof TextMessage) {
+					TextMessage txtMsg = (TextMessage) message;
+					String messageText = txtMsg.getText();
+					Interesse interesse = unpack(messageText);
+					AcoesController.getInstance()
+							.addInteressesVenda(interesse);
+				}
+			} catch (JMSException | UnknownHostException e) {
+				// Handle the exception appropriately
+			}
+		}
+
+	}
+	
+	public class ReadDelete implements MessageListener {
+		private int ackMode;
+		private String messageTopicName;
+		private String messageBrokerUrl;
+		private Session session;
+		private boolean transacted = false;
+
+		public ReadDelete() {
+				messageBrokerUrl = "tcp://localhost:61616";
+				messageTopicName = "Delete";
+				ackMode = Session.AUTO_ACKNOWLEDGE;
+			this.setupMessageTopicConsumer();
+		}
+
+		private void setupMessageTopicConsumer() {
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
+					messageBrokerUrl);
+			Connection connection;
+			try {
+				connection = connectionFactory.createConnection();
+				connection.start();
+				this.session = connection.createSession(this.transacted,
+						ackMode);
+				Destination adminQueue = this.session
+						.createTopic(messageTopicName);
+
+				// Set up a consumer to consume messages off of the admin queue
+				MessageConsumer consumer = this.session.createConsumer(adminQueue);
+				consumer.setMessageListener(this);
+			} catch (JMSException e) {
+				// Handle the exception appropriately
+			}
+		}
+
+		public void onMessage(Message message) {
+			try {
+				if (message instanceof TextMessage) {
+					TextMessage txtMsg = (TextMessage) message;
+					String messageText = txtMsg.getText();
+					String s[] = messageText.split(" "); //INTERESSE (Compra ou Venda)  MSGID ex: Compra MSGID21
+					if(s[0].equals("Compra"))
+						AcoesController.getInstance().excluirInteresseCompra(s[1]);
+					else
+						AcoesController.getInstance().excluirInteresseVenda(s[1]);
+				}
+			} catch (JMSException e) {
+				// Handle the exception appropriately
+			}
+		}
+
+	}
+
 
 	public static Interesse unpack(final String str)
 			throws UnknownHostException {

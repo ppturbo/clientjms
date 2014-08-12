@@ -24,7 +24,8 @@ public class MonitorarView extends JFrame {
 	private JPanel contentPane;
 	private JTable tableOfertaVenda;
 	private JTable tableOfertaCompra;
-	private DefaultTableModel modelo;
+	private DefaultTableModel modeloCompra;
+	private DefaultTableModel modeloVenda;
 
 	/**
 	 * Create the frame.
@@ -36,21 +37,28 @@ public class MonitorarView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		modelo=new DefaultTableModel();
-		modelo.addColumn("Empresa"); //s[0]Empresa s[1]Quantidade s[2]Preco s[3]Prazo s[6]Nome
-		modelo.addColumn("Quantidade");
-		modelo.addColumn("Preco");
-		modelo.addColumn("Prazo");
-		modelo.addColumn("Nome Cliente");
+		modeloCompra=new DefaultTableModel();
+		modeloCompra.addColumn("Empresa"); //s[0]Empresa s[1]Quantidade s[2]Preco s[3]Prazo s[6]Nome
+		modeloCompra.addColumn("Quantidade");
+		modeloCompra.addColumn("Preco");
+		modeloCompra.addColumn("Prazo");
+		modeloCompra.addColumn("Nome Cliente");
+		
+		modeloVenda=new DefaultTableModel();
+		modeloVenda.addColumn("Empresa"); //s[0]Empresa s[1]Quantidade s[2]Preco s[3]Prazo s[6]Nome
+		modeloVenda.addColumn("Quantidade");
+		modeloVenda.addColumn("Preco");
+		modeloVenda.addColumn("Prazo");
+		modeloVenda.addColumn("Nome Cliente");
 
-		tableOfertaVenda = new JTable(modelo);
+		tableOfertaVenda = new JTable(modeloVenda);
 		
 		JScrollPane scrollPaneVenda = new JScrollPane(tableOfertaVenda);
 		scrollPaneVenda.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPaneVenda.setBounds(10, 56, 293, 411);
 		contentPane.add(scrollPaneVenda);
 		
-		tableOfertaCompra = new JTable(modelo);		
+		tableOfertaCompra = new JTable(modeloCompra);		
 		JScrollPane scrollPaneCompra = new JScrollPane(tableOfertaCompra);
 		scrollPaneCompra.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPaneCompra.setBounds(317, 56, 293, 411);
@@ -74,7 +82,7 @@ public class MonitorarView extends JFrame {
 				try { //s[0]Empresa s[1]Quantidade s[2]Preco s[3]Prazo s[6]Nome
 					for(Interesse interesse : AcoesController.getInstance().getInteressesCompra()){
 						String[] o={interesse.getAcao().getEmpresa(), String.valueOf(interesse.getAcao().getQuantidade()), String.valueOf(interesse.getAcao().getPreco()), String.valueOf(interesse.getTimestampRegistro()), interesse.getCliente().getNomeClient()};
-						modelo.addRow(o);
+						modeloCompra.addRow(o);
 					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block

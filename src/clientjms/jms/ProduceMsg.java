@@ -25,7 +25,7 @@ import clientjms.model.Interesse;
  *
  */
 public class ProduceMsg {
-	
+
 	public void ProdMSG(Interesse interesse, String topic) { // TOPIC VENDA ou
 																// COMPRA
 		try {
@@ -63,7 +63,42 @@ public class ProduceMsg {
 		}
 	}
 
-	
+	public void ProdMSGDelete(String interesse, String MSGID) {
+		try {
+			// Create a ConnectionFactory
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+
+			// Create a Connection
+			Connection connection = connectionFactory.createConnection();
+			connection.start();
+
+			// Create a Session
+			Session session = connection.createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+
+			// Create the destination (Topic or Queue)
+			Destination destination = session.createTopic("Delete");
+
+			// Create a MessageProducer from the Session to the Topic or Queue
+			MessageProducer producer = session.createProducer(destination);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+			// Create a messages
+			String text = interesse + " " + MSGID;
+			TextMessage message = session.createTextMessage(text);
+
+			// Tell the producer to send the message
+			producer.send(message);
+
+			// Clean up
+			session.close();
+			connection.close();
+		} catch (Exception e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace();
+		}
+	}
+
 	public Interesse unpack(String str) throws UnknownHostException {
 		// formato da string: s[0]Empresa s[1]Quantidade s[2]Pre�o s[3]Prazo
 		// s[4]IP s[5]Porta s[6]Nome s[7]MSGID s[8]TempoRegistro
