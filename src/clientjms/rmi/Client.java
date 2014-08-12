@@ -1,7 +1,6 @@
-/**
- * 
- */
 package clientjms.rmi;
+
+
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

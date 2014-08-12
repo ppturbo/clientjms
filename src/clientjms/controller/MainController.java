@@ -1,47 +1,59 @@
 package clientjms.controller;
 
 import java.awt.EventQueue;
+import java.rmi.RemoteException;
 
 import clientjms.model.Carteira;
-import clientjms.view.*;
+import clientjms.rmi.ClientImpl;
+import clientjms.rmi.ServicoClient;
+import clientjms.view.AcaoAddView;
+import clientjms.view.CarteiraView;
+import clientjms.view.MainView;
+import clientjms.view.MonitorarView;
+import clientjms.view.NomeView;
+import clientjms.view.VendaView;
 
 public class MainController {
-	
-		/**
-		 * Instância do singleton.
-		 */
-		private static MainController instance = null;
 
-		private MainController() {
+	/**
+	 * Instância do singleton.
+	 */
+	private static MainController instance = null;
+	private ServicoClient servClient;
+	private ClientImpl client;
 
+	public MainController() throws RemoteException {
+		servClient = new ServicoClient();
+		client = servClient.getClient();
+		CriaNomeClient();
+	}
+
+	public static MainController getInstance() throws RemoteException {
+		if (instance == null) {
+			instance = new MainController();
 		}
 
-		public static MainController getInstance() {
-			if (instance == null) {
-				instance = new MainController();
-			}
+		return instance;
+	}
 
-			return instance;
-		}
-		
-		/**
-		 * Inicializa a funcionalidade de venda.
-		 */
-		public void registrarVenda() {
-			EventQueue.invokeLater(new Runnable() {
-				
-				// TODO Chamar outra view com dropdown mostrando as acoes da carteira
-				public void run() {
-					try {
-						VendaView frame = new VendaView(Carteira.getInstance().getAcoes());
-						frame.setVisible(true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+	/**
+	 * Inicializa a funcionalidade de venda.
+	 */
+	public void registrarVenda() {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				try {
+					VendaView frame = new VendaView(Carteira.getInstance()
+							.getAcoes());
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			});
-		}
-		
+			}
+		});
+	}
+
 	/**
 	 * Inicializa a funcionalidade de Adicionar A��o.
 	 */
@@ -57,6 +69,7 @@ public class MainController {
 			}
 		});
 	}
+
 	/**
 	 * Inicializa a funcionalidade de carteira.
 	 */
@@ -72,8 +85,8 @@ public class MainController {
 			}
 		});
 	}
-	
-	public void Monitoramento(){
+
+	public void Monitoramento() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -86,4 +99,33 @@ public class MainController {
 		});
 	}
 
+	public void CriaNomeClient() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					NomeView frame = new NomeView();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public void JanelaPrincipal() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainView frame = new MainView();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public void RegistrarNome(String nome) throws RemoteException{
+		servClient.init(nome);
+	}
 }

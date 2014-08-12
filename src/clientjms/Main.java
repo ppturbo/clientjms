@@ -4,7 +4,9 @@
 package clientjms;
 
 import java.awt.EventQueue;
+import java.rmi.RemoteException;
 
+import clientjms.controller.MainController;
 import clientjms.jms.ProduceMsg;
 import clientjms.view.MainView;
 
@@ -17,17 +19,9 @@ public class Main {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainView frame = new MainView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	private static MainController mainController;
+	public static void main(String[] args) throws RemoteException {
+		mainController = new MainController();
 	}
 
 }

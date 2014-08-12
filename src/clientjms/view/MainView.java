@@ -2,6 +2,7 @@ package clientjms.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,7 +46,12 @@ public class MainView extends JFrame {
 		JMenuItem mntmMonitorar = new JMenuItem("Monitorar");
 		mntmMonitorar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainController.getInstance().Monitoramento();
+				try {
+					MainController.getInstance().Monitoramento();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		menuBar.add(mntmMonitorar);
@@ -64,7 +70,12 @@ public class MainView extends JFrame {
 		JMenuItem mntmConsultar = new JMenuItem("Carteira");
 		mntmConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainController.getInstance().MostraCarteira();
+				try {
+					MainController.getInstance().MostraCarteira();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		menuBar.add(mntmConsultar);
@@ -72,13 +83,23 @@ public class MainView extends JFrame {
 		JMenuItem mntmAddAcao = new JMenuItem("AddAcao");
 		mntmAddAcao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainController.getInstance().registrarAcao();
+				try {
+					MainController.getInstance().registrarAcao();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		menuBar.add(mntmAddAcao);
 				mntmVender.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainController.getInstance().registrarVenda();
+				try {
+					MainController.getInstance().registrarVenda();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		JLabel lblDinheiro = new JLabel("");
